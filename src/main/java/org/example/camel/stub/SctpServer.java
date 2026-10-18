@@ -57,7 +57,19 @@ public class SctpServer {
         sctpManagement.getAssociation(ASSOCIATION_NAME)
                 .setAssociationListener(new SctpAssociationListener());
 
-        sctpManagement.startServer(SERVER_NAME);
+        for (var server : sctpManagement.getServers()) {
+            if (SERVER_NAME.equals(server.getName())) {
+
+                if (!server.isStarted()) {
+                    sctpManagement.startServer(SERVER_NAME);
+                    System.out.println("SCTP server started");
+                } else {
+                    System.out.println("SCTP server already started");
+                }
+
+                break;
+            }
+        }
 
         System.out.println(
                 "SCTP server started on " + LOCAL_IP + ":" + LOCAL_PORT
