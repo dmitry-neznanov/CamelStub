@@ -27,9 +27,14 @@ public class SctpServer {
 
         sctpManagement.start();
 
-        boolean serverExists = sctpManagement.getServers()
-                .stream()
-                .anyMatch(server -> SERVER_NAME.equals(server.getName()));
+        boolean serverExists = false;
+
+        for (var server : sctpManagement.getServers()) {
+            if (SERVER_NAME.equals(server.getName())) {
+                serverExists = true;
+                break;
+            }
+        }
 
         if (!serverExists) {
             sctpManagement.addServer(
