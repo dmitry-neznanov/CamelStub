@@ -27,6 +27,7 @@ public class SctpServer {
 
         sctpManagement.start();
 
+        // Проверяем существование SCTP-сервера
         boolean serverExists = false;
 
         for (var server : sctpManagement.getServers()) {
@@ -44,6 +45,7 @@ public class SctpServer {
             );
         }
 
+        // Проверяем существование серверной association
         if (sctpManagement.getAssociation(ASSOCIATION_NAME) == null) {
             sctpManagement.addServerAssociation(
                     REMOTE_IP,
@@ -54,9 +56,12 @@ public class SctpServer {
             );
         }
 
-        sctpManagement.getAssociation(ASSOCIATION_NAME)
-                .setAssociationListener(new SctpAssociationListener());
+        var association = sctpManagement.getAssociation(ASSOCIATION_NAME);
 
+        // Регистрируем обработчик событий
+        association.setAssociationListener(new SctpAssociationListener());
+
+        // Запускаем сервер, если он ещё не запущен
         for (var server : sctpManagement.getServers()) {
             if (SERVER_NAME.equals(server.getName())) {
 
@@ -71,8 +76,16 @@ public class SctpServer {
             }
         }
 
+        // Запускаем серверную association
+        if (!association.isStarted()) {
+            sctpManagement.startAssociation(ASSOCIATION_NAME);
+            System.out.println("SCTP server association started");
+        } else {
+            System.out.println("SCTP server association already started");
+        }
+
         System.out.println(
-                "SCTP server started on " + LOCAL_IP + ":" + LOCAL_PORT
+                "SCTP server listening on " + LOCAL_IP + ":" + LOCAL_PORT
         );
     }
 
