@@ -1,51 +1,60 @@
 package org.example.camel.stub;
 
-
 import org.mobicents.protocols.api.IpChannelType;
 import org.mobicents.protocols.sctp.ManagementImpl;
 
+import java.io.IOException;
+
 public class SctpServer {
 
+    private static final String MANAGEMENT_NAME = "CamelStubSctp";
     private static final String SERVER_NAME = "camel-sctp-server";
-    private static final String SERVER_IP = "127.0.0.1";
-    private static final int SERVER_PORT = 2905;
+    private static final String ASSOCIATION_NAME = "stubAssociation";
+
+    private static final String LOCAL_IP = "127.0.0.1";
+    private static final int LOCAL_PORT = 2905;
+
+    private static final String REMOTE_IP = "127.0.0.1";
+    private static final int REMOTE_PORT = 2906;
 
     private final ManagementImpl sctpManagement;
 
-    public SctpServer() throws Exception {
-        sctpManagement = new ManagementImpl("CamelStubSctp");
+    public SctpServer() throws IOException {
+        sctpManagement = new ManagementImpl(MANAGEMENT_NAME);
     }
 
     public void start() throws Exception {
 
-        // Инициализация SCTP Management
         sctpManagement.start();
 
-        // Создание SCTP-сервера
         sctpManagement.addServer(
                 SERVER_NAME,
-                SERVER_IP,
-                SERVER_PORT
+                LOCAL_IP,
+                LOCAL_PORT
         );
 
         sctpManagement.addServerAssociation(
-                "127.0.0.1",
-                2906,
+                REMOTE_IP,
+                REMOTE_PORT,
                 SERVER_NAME,
-                "stubAssociation",
+                ASSOCIATION_NAME,
                 IpChannelType.SCTP
         );
 
-        // Запуск SCTP-сервера
+        sctpManagement.getAssociation(ASSOCIATION_NAME)
+                .setAssociationListener(new SctpAssociationListener());
+
         sctpManagement.startServer(SERVER_NAME);
 
         System.out.println(
-                "SCTP server started on " +
-                        SERVER_IP + ":" + SERVER_PORT
+                "SCTP server started on " + LOCAL_IP + ":" + LOCAL_PORT
         );
     }
 
     public void stop() throws Exception {
+
         sctpManagement.stop();
+
+        System.out.println("SCTP server stopped");
     }
 }
