@@ -27,19 +27,27 @@ public class SctpServer {
 
         sctpManagement.start();
 
-        sctpManagement.addServer(
-                SERVER_NAME,
-                LOCAL_IP,
-                LOCAL_PORT
-        );
+        boolean serverExists = sctpManagement.getServers()
+                .stream()
+                .anyMatch(server -> SERVER_NAME.equals(server.getName()));
 
-        sctpManagement.addServerAssociation(
-                REMOTE_IP,
-                REMOTE_PORT,
-                SERVER_NAME,
-                ASSOCIATION_NAME,
-                IpChannelType.SCTP
-        );
+        if (!serverExists) {
+            sctpManagement.addServer(
+                    SERVER_NAME,
+                    LOCAL_IP,
+                    LOCAL_PORT
+            );
+        }
+
+        if (sctpManagement.getAssociation(ASSOCIATION_NAME) == null) {
+            sctpManagement.addServerAssociation(
+                    REMOTE_IP,
+                    REMOTE_PORT,
+                    SERVER_NAME,
+                    ASSOCIATION_NAME,
+                    IpChannelType.SCTP
+            );
+        }
 
         sctpManagement.getAssociation(ASSOCIATION_NAME)
                 .setAssociationListener(new SctpAssociationListener());
