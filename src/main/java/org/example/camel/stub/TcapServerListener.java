@@ -23,6 +23,7 @@ public class TcapServerListener implements TCListener {
     }
 
 
+
     @Override
     public void onTCBegin(TCBeginIndication indication) {
 
@@ -33,9 +34,20 @@ public class TcapServerListener implements TCListener {
                         + dialog.getLocalDialogId()
         );
 
+        System.out.println(
+                "Remote Dialog ID=" + dialog.getRemoteDialogId()
+        );
+
+        System.out.println(
+                "Dialog state=" + dialog.getState()
+        );
+
         try {
             TCEndRequest endRequest =
                     provider.getDialogPrimitiveFactory().createEnd(dialog);
+
+            // Обязательно устанавливаем тип завершения
+            endRequest.setTermination(TerminationType.Basic);
 
             dialog.send(endRequest);
 
@@ -49,6 +61,7 @@ public class TcapServerListener implements TCListener {
             e.printStackTrace();
         }
     }
+
 
 
     @Override
