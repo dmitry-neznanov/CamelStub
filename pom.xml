@@ -58,6 +58,12 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.tcap</groupId>
+            <artifactId>tcap-impl</artifactId>
+            <version>8.0.0-179</version>
+        </dependency>
+
     </dependencies>
 
     <build>

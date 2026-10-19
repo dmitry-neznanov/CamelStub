@@ -3,6 +3,7 @@ package org.example.camel.lifecycle;
 import org.example.camel.stub.M3uaServer;
 import org.example.camel.stub.SccpServer;
 import org.example.camel.stub.SctpServer;
+import org.example.camel.stub.TcapServer;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ public class SigtranLifecycle implements SmartLifecycle {
     private SctpServer sctpServer;
     private M3uaServer m3uaServer;
     private SccpServer sccpServer;
+    private TcapServer tcapServer;
 
     private volatile boolean running = false;
 
@@ -23,20 +25,30 @@ public class SigtranLifecycle implements SmartLifecycle {
         }
 
         try {
+            // 1. SCTP
             sctpServer = new SctpServer();
             sctpServer.start();
 
+            // 2. M3UA
             m3uaServer = new M3uaServer(
                     sctpServer.getManagement(),
                     sctpServer.getAssociationName()
             );
             m3uaServer.start();
 
+            // 3. SCCP
             sccpServer = new SccpServer(
                     m3uaServer.getManagement()
             );
             sccpServer.start();
 
+            // 4. TCAP
+            tcapServer = new TcapServer(
+                    sccpServer.getStack().getSccpProvider()
+            );
+            tcapServer.start();
+
+            // 5. Запускаем M3UA ASP
             m3uaServer.startAsp();
 
             running = true;
@@ -56,10 +68,21 @@ public class SigtranLifecycle implements SmartLifecycle {
 
         running = false;
 
-        // Останавливаем в обратном порядке
+        // Останавливаем компоненты в обратном порядке
+
+        try {
+            if (tcapServer != null) {
+                tcapServer.stop();
+                tcapServer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             if (sccpServer != null) {
                 sccpServer.stop();
+                sccpServer = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,6 +91,7 @@ public class SigtranLifecycle implements SmartLifecycle {
         try {
             if (m3uaServer != null) {
                 m3uaServer.stop();
+                m3uaServer = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,6 +100,7 @@ public class SigtranLifecycle implements SmartLifecycle {
         try {
             if (sctpServer != null) {
                 sctpServer.stop();
+                sctpServer = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
