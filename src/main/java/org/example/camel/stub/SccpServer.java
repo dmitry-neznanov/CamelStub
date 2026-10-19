@@ -33,8 +33,7 @@ public class SccpServer {
     private final SccpStackImpl sccpStack;
 
     private static final int LOCAL_SSN = 8;
-    private final SccpMessageListener messageListener =
-            new SccpMessageListener();
+    private SccpMessageListener messageListener;
 
     public SccpServer(M3UAManagementImpl m3uaManagement) {
 
@@ -56,13 +55,18 @@ public class SccpServer {
         configureRemoteSpc();
         configureRemoteSsn();
 
-        sccpStack.getSccpProvider().registerSccpListener(
+        var provider = sccpStack.getSccpProvider();
+
+        messageListener = new SccpMessageListener(provider);
+
+        provider.registerSccpListener(
                 LOCAL_SSN,
                 messageListener
         );
 
+        System.out.println("SCCP listener registered for SSN=8");
         System.out.println("SCCP server configured");
-        System.out.println("SCCP listener registered for SSN=" + LOCAL_SSN);
+
     }
 
     private void configureRemoteSpc() throws Exception {

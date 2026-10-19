@@ -4,18 +4,60 @@ import org.restcomm.protocols.ss7.sccp.*;
 import org.restcomm.protocols.ss7.sccp.message.*;
 import org.restcomm.protocols.ss7.sccp.parameter.*;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class SccpMessageListener implements SccpListener {
 
+    private final SccpProvider provider;
+
+    public SccpMessageListener(SccpProvider provider) {
+        this.provider = provider;
+    }
+
     @Override
     public void onMessage(SccpDataMessage message) {
 
-        byte[] data = message.getData();
+        String request = new String(
+                message.getData(),
+                StandardCharsets.UTF_8
+        );
 
-        String text = new String(data, StandardCharsets.UTF_8);
+        System.out.println("SCCP request received: " + request);
 
-        System.out.println("SCCP message received: " + text);
+        try {
+            sendResponse(message);
+        } catch (IOException e) {
+            System.err.println("Failed to send SCCP response");
+            e.printStackTrace();
+        }
+    }
+
+    private void sendResponse(SccpDataMessage request) throws IOException {
+
+        // Адрес отправителя запроса становится получателем ответа
+        var calledParty = request.getCallingPartyAddress();
+
+        // Адрес получателя запроса становится отправителем ответа
+        var callingParty = request.getCalledPartyAddress();
+
+        byte[] payload = "Hello from CamelStub"
+                .getBytes(StandardCharsets.UTF_8);
+
+        var response = provider.getMessageFactory()
+                .createDataMessageClass0(
+                        calledParty,
+                        callingParty,
+                        payload,
+                        0,
+                        false,
+                        null,
+                        null
+                );
+
+        provider.send(response);
+
+        System.out.println("SCCP response sent");
     }
 
     @Override
