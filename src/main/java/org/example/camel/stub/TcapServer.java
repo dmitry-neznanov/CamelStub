@@ -8,6 +8,8 @@ public class TcapServer {
     private static final String STACK_NAME = "CamelStubTcap";
     private static final int LOCAL_SSN = 8;
 
+    private final TcapServerListener listener;
+
     private final TCAPStackImpl tcapStack;
 
     public TcapServer(SccpProvider sccpProvider) {
@@ -17,19 +19,23 @@ public class TcapServer {
                 sccpProvider,
                 LOCAL_SSN
         );
+
+        this.listener = new TcapServerListener(
+                tcapStack.getProvider()
+        );
     }
 
     public void start() throws Exception {
-
         System.out.println("Starting TCAP server...");
 
         tcapStack.start();
+        tcapStack.getProvider().addTCListener(listener);
 
         System.out.println("TCAP server started");
     }
 
     public void stop() {
-
+        tcapStack.getProvider().removeTCListener(listener);
         tcapStack.stop();
 
         System.out.println("TCAP server stopped");

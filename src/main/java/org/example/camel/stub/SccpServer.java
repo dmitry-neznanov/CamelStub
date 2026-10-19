@@ -52,7 +52,6 @@ public class SccpServer {
         configureRemoteSpc();
         configureRemoteSsn();
 
-        System.out.println("SCCP listener registered for SSN=8");
         System.out.println("SCCP server configured");
 
     }
