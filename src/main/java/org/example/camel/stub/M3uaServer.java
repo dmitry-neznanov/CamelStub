@@ -101,9 +101,25 @@ public class M3uaServer {
 
     public void startAsp() throws Exception {
 
-        m3uaManagement.startAsp(ASP_NAME);
+        for (var asp : m3uaManagement.getAspfactories()) {
 
-        System.out.println("M3UA server ASP started");
+            if (ASP_NAME.equals(asp.getName())) {
+
+                if (asp.getStatus()) {
+                    System.out.println("M3UA ASP already started");
+                    return;
+                }
+
+                m3uaManagement.startAsp(ASP_NAME);
+
+                System.out.println("M3UA server ASP started");
+                return;
+            }
+        }
+
+        throw new IllegalStateException(
+                "M3UA ASP not found: " + ASP_NAME
+        );
     }
 
     public M3UAManagementImpl getManagement() {
