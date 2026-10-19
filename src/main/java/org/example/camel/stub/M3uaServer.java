@@ -4,6 +4,7 @@ import org.mobicents.protocols.sctp.ManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
+import org.restcomm.protocols.ss7.m3ua.RouteAs;
 import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
@@ -17,6 +18,10 @@ public class M3uaServer {
     private static final String ASP_NAME = "stubASP";
 
     private static final long ROUTING_CONTEXT = 100L;
+
+    private static final int LOCAL_PC = 2;
+    private static final int REMOTE_PC = 1;
+    private static final int SCCP_SI = 3;
 
     private final M3UAManagementImpl m3uaManagement;
     private final String associationName;
@@ -97,6 +102,12 @@ public class M3uaServer {
         }
 
         System.out.println("M3UA server configured");
+        System.out.println("M3UA routes:");
+
+        m3uaManagement.getRoute().forEach((key, route) -> {
+            System.out.println("Key: " + key);
+            System.out.println("Route: " + route);
+        });
     }
 
     public void startAsp() throws Exception {
@@ -128,5 +139,28 @@ public class M3uaServer {
 
     public void stop() throws Exception {
         m3uaManagement.stop();
+    }
+
+    private void configureRoute() throws Exception {
+
+        boolean routeExists = false;
+
+        for (RouteAs route : m3uaManagement.getRoute().values()) {
+
+            // Проверку существующего маршрута добавим после
+            // уточнения структуры RouteAs.
+        }
+
+        if (!routeExists) {
+            m3uaManagement.addRoute(
+                    REMOTE_PC,
+                    LOCAL_PC,
+                    SCCP_SI,
+                    AS_NAME,
+                    TrafficModeType.Loadshare
+            );
+
+            System.out.println("M3UA route created");
+        }
     }
 }
