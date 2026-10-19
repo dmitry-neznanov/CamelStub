@@ -44,7 +44,7 @@ public class SigtranLifecycle implements SmartLifecycle {
             tcapServer = new TcapServer(
                     sccpServer.getStack().getSccpProvider()
             );
-            tcapServer.start();
+
 
             // CAP
             capServer = new CapServer(
@@ -79,15 +79,6 @@ public class SigtranLifecycle implements SmartLifecycle {
             if (capServer != null) {
                 capServer.stop();
                 capServer = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            if (tcapServer != null) {
-                tcapServer.stop();
                 tcapServer = null;
             }
         } catch (Exception e) {
