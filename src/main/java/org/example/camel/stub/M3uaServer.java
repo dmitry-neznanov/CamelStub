@@ -23,6 +23,7 @@ public class M3uaServer {
     private static final int REMOTE_PC = 1;
     private static final int SCCP_SI = 3;
 
+
     private final M3UAManagementImpl m3uaManagement;
     private final String associationName;
 
@@ -101,7 +102,8 @@ public class M3uaServer {
             );
         }
 
-        System.out.println("M3UA server configured");
+        configureRoute();
+
         System.out.println("M3UA routes:");
 
         m3uaManagement.getRoute().forEach((key, route) -> {
@@ -143,15 +145,11 @@ public class M3uaServer {
 
     private void configureRoute() throws Exception {
 
-        boolean routeExists = false;
+        // Пока у нас один маршрут:
+        // CamelStub (PC=2) -> CamelGenerator (PC=1)
 
-        for (RouteAs route : m3uaManagement.getRoute().values()) {
+        if (m3uaManagement.getRoute().isEmpty()) {
 
-            // Проверку существующего маршрута добавим после
-            // уточнения структуры RouteAs.
-        }
-
-        if (!routeExists) {
             m3uaManagement.addRoute(
                     REMOTE_PC,
                     LOCAL_PC,
@@ -161,6 +159,9 @@ public class M3uaServer {
             );
 
             System.out.println("M3UA route created");
+
+        } else {
+            System.out.println("M3UA routes already configured");
         }
     }
 }
