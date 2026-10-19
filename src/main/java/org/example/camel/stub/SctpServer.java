@@ -45,8 +45,16 @@ public class SctpServer {
             );
         }
 
-        // Проверяем существование серверной association
-        if (sctpManagement.getAssociation(ASSOCIATION_NAME) == null) {
+        boolean associationExists = false;
+
+        for (var association : sctpManagement.getAssociations().values()) {
+            if (ASSOCIATION_NAME.equals(association.getName())) {
+                associationExists = true;
+                break;
+            }
+        }
+
+        if (!associationExists) {
             sctpManagement.addServerAssociation(
                     REMOTE_IP,
                     REMOTE_PORT,
@@ -55,6 +63,12 @@ public class SctpServer {
                     IpChannelType.SCTP
             );
         }
+
+        var association = sctpManagement.getAssociation(ASSOCIATION_NAME);
+
+        System.out.println(
+                "SCTP association started: " + association.isStarted()
+        );
 
         // Запускаем сервер, если он ещё не запущен
         for (var server : sctpManagement.getServers()) {

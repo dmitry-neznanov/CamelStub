@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<connectdelay value="5000"/>
+<servers>
+	<server name="camel-sctp-server" started="false" hostAddress="127.0.0.1" hostPort="2905" ipChannelType="0" acceptAnonymousConnections="false" maxConcurrentConnectionsCount="0" extraHostAddresseSize="0">
+		<associations>
+			<string value="stubAssociation"/>
+		</associations>
+	</server>
+</servers>
+<associations>
+	<name value="stubAssociation"/>
+	<association name="stubAssociation" assoctype="SERVER" hostPort="0" peerAddress="127.0.0.1" peerPort="2906" serverName="camel-sctp-server" ipChannelType="0" extraHostAddresseSize="0"/>
+</associations>
