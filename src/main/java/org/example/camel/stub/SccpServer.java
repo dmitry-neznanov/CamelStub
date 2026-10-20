@@ -36,8 +36,6 @@ public class SccpServer {
 
         sccpStack = new SccpStackImpl(STACK_NAME, null);
 
-
-        // Подключаем M3UA как транспорт SCCP
         sccpStack.setMtp3UserPart(MTP3_ID, m3uaManagement);
     }
 

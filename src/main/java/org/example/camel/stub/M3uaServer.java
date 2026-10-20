@@ -3,8 +3,6 @@ package org.example.camel.stub;
 import org.mobicents.protocols.sctp.ManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
-import org.restcomm.protocols.ss7.m3ua.IPSPType;
-import org.restcomm.protocols.ss7.m3ua.RouteAs;
 import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
@@ -14,6 +12,7 @@ import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 public class M3uaServer {
 
     private static final String MANAGEMENT_NAME = "CamelStubM3ua";
+    private static final String MANAGEMENT_PATH =  "CamelStub";
     private static final String AS_NAME = "stubAS";
     private static final String ASP_NAME = "stubASP";
 
@@ -34,7 +33,7 @@ public class M3uaServer {
 
         m3uaManagement = new M3UAManagementImpl(
                 MANAGEMENT_NAME,
-                "CamelStub",
+                MANAGEMENT_PATH,
                 null
         );
 
@@ -57,7 +56,6 @@ public class M3uaServer {
                         TrafficModeType.Loadshare
                 );
 
-        // Создаём Application Server
         boolean asExists = false;
 
         for (var as : m3uaManagement.getAppServers()) {
@@ -80,7 +78,6 @@ public class M3uaServer {
             );
         }
 
-        // Создаём ASP Factory
         boolean aspExists = false;
 
         for (var asp : m3uaManagement.getAspfactories()) {
@@ -144,9 +141,6 @@ public class M3uaServer {
     }
 
     private void configureRoute() throws Exception {
-
-        // Пока у нас один маршрут:
-        // CamelStub (PC=2) -> CamelGenerator (PC=1)
 
         if (m3uaManagement.getRoute().isEmpty()) {
 

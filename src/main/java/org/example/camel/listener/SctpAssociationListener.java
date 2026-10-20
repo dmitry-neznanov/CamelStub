@@ -1,4 +1,4 @@
-package org.example.camel.stub;
+package org.example.camel.listener;
 
 import org.mobicents.protocols.api.Association;
 import org.mobicents.protocols.api.AssociationListener;

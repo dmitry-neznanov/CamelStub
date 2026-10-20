@@ -8,7 +8,6 @@ public class TcapServer {
     private static final String STACK_NAME = "CamelStubTcap";
     private static final int LOCAL_SSN = 8;
 
-
     private final TCAPStackImpl tcapStack;
 
     public TcapServer(SccpProvider sccpProvider) {
@@ -18,7 +17,6 @@ public class TcapServer {
                 sccpProvider,
                 LOCAL_SSN
         );
-
     }
 
     public void start() throws Exception {

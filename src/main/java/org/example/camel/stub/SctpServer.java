@@ -27,7 +27,6 @@ public class SctpServer {
 
         sctpManagement.start();
 
-        // Проверяем существование SCTP-сервера
         boolean serverExists = false;
 
         for (var server : sctpManagement.getServers()) {
@@ -70,7 +69,6 @@ public class SctpServer {
                 "SCTP association started: " + association.isStarted()
         );
 
-        // Запускаем сервер, если он ещё не запущен
         for (var server : sctpManagement.getServers()) {
             if (SERVER_NAME.equals(server.getName())) {
 
@@ -84,7 +82,6 @@ public class SctpServer {
                 break;
             }
         }
-
 
         System.out.println(
                 "SCTP server listening on " + LOCAL_IP + ":" + LOCAL_PORT
