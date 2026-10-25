@@ -4,6 +4,8 @@ import org.mobicents.protocols.api.IpChannelType;
 import org.mobicents.protocols.sctp.ManagementImpl;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class SctpServer {
 
@@ -19,8 +21,19 @@ public class SctpServer {
 
     private final ManagementImpl sctpManagement;
 
+    private static final Path PERSIST_DIR = Path.of(
+            System.getProperty("user.home"),
+            "camel-sigtran",
+            "stub"
+    );
+
     public SctpServer() throws IOException {
+        Files.createDirectories(PERSIST_DIR);
+
         sctpManagement = new ManagementImpl(MANAGEMENT_NAME);
+        sctpManagement.setPersistDir(
+                PERSIST_DIR.toString()
+        );
     }
 
     public void start() throws Exception {
